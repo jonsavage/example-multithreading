@@ -14,6 +14,13 @@ public class CopyMulti
 
     static long time;
 
+    // ----------------------------------------------------------
+    /**
+     * Main method. Here we will benchmark 2 3way copying techniques. First a
+     * linear method and next multithreaded.
+     * @param args no args
+     * @throws InterruptedException not relevant
+     */
     public static void main(String args[]) throws InterruptedException
     {
         CopyMulti a = new CopyMulti();
@@ -24,7 +31,7 @@ public class CopyMulti
 
 
         //First, Traditional linear 3 way copy
-        System.out.println("traditional swapping of 4 pairs of arrays");
+        System.out.println("traditional swapping of 4 pairs of arrays.");
 
         //Fill up arrays
         initArrays();
@@ -46,16 +53,17 @@ public class CopyMulti
 
         time = System.currentTimeMillis() - time;
 
-        System.out.println("time to swap: " + time + "ms");
+        System.out.println("time to swap: " + time + " ms.");
 
         //Now lets split each 3 way copy over 4 threads (use 4 cores in my case)
-        System.out.println("\nNow split the same operations over 4 threads "
-            + "using " + Runtime.getRuntime().availableProcessors() + " cores");
+        System.out.println("\nNow split the same operations over 4 threads.");
+        System.out.println("Your JVM has access to " +
+            Runtime.getRuntime().availableProcessors() + " cores.");
 
         //reset array contents
         initArrays();
 
-        //Create threads
+        //Create 4 threads
         ThreeWayCopyThread thread1 = a.new ThreeWayCopyThread("thread1", a1, a5);
         ThreeWayCopyThread thread2 = a.new ThreeWayCopyThread("thread2", b1, b5);
         ThreeWayCopyThread thread3 = a.new ThreeWayCopyThread("thread3", c1, c5);
@@ -69,18 +77,28 @@ public class CopyMulti
         thread3.start();
         thread4.start();
 
+        //join() will cause this (main) thread to pause until each respective
+        //thread finished.
         thread1.join();
         thread2.join();
         thread3.join();
         thread4.join();
 
+        //At this point all threads are finished swapping
+
+        //calculate running time
         time = System.currentTimeMillis() - time;
 
-        System.out.println("\nTime to swap " + time + " ms");
 
-
+        //print stats
+        System.out.println("\nTime to swap: " + time + " ms.");
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Fills up the 8 arrays with 1's or 5's
+     */
     public static void initArrays() {
         for (int i=0; i< a5.length; i++) {
             a5[i] = b5[i] = c5[i] = d5[i] = 5;
@@ -88,10 +106,16 @@ public class CopyMulti
           }
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Traditional 3 way swap, swaps the contents of param a and param b
+     * @param a first array
+     * @param b second array
+     */
     public static void swap(int[] a, int[] b) {
 
         int swap;
-        for (int i = 0; i < a5.length; i++)
+        for (int i = 0; i < a.length; i++)
         {
             swap = a[i];
             a[i] = b[i];
@@ -99,7 +123,15 @@ public class CopyMulti
         }
     }
 
-
+    /*
+     * // -------------------------------------------------------------------------
+    /**
+     *  Our thread object. Here we will define what each thread does. In this
+     *  case it will swap the contents of arrays and swap them back again.
+     *
+     *  @author Author: Jonathan Savage (jon5)
+     *  @version Jan 28, 2015
+     */
     private class ThreeWayCopyThread extends Thread
     {
         int[] a;
@@ -117,31 +149,36 @@ public class CopyMulti
         {
             this.a = a;
             this.b = b;
+
+            //sets this thread object's name in inherited method setName("name")
             setName(name);
         }
 
+        /*
+         * Called when <thread object>.start() is called.
+         * This method MUST be overridden in order to subclass Thread
+         */
         public void run() {
 
             //swap the numbers in the arrays
-            try
-            {
-                swap(a, b);
-                swap(b, a);
-            }
-            catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            swap(a, b);
 
-            System.out.println(this.getName() + " finished");
+            //sway them back again
+            swap(b, a);
+
+            System.out.println(this.getName() + " finished.");
         }
 
-        //Traditional 3 way swap
-        public void swap(int[] a, int[] b) throws InterruptedException {
+        // ----------------------------------------------------------
+        /**
+         * Traditional 3 way swap, swaps the contents of param a and param b
+         * @param a first array
+         * @param b second array
+         */
+        public void swap(int[] a, int[] b) {
 
             int swap;
-            for (int i = 0; i < a5.length; i++)
+            for (int i = 0; i < a.length; i++)
             {
                 swap = a[i];
                 a[i] = b[i];

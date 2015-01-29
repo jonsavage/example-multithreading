@@ -1,4 +1,13 @@
 
+
+
+// -------------------------------------------------------------------------
+/**
+ *  Tests a traditional 3way copy vs a multithreaded copy.
+ *
+ *  @author Author: Jonathan Savage (jon5)
+ *  @version Jan 28, 2015
+ */
 public class CopyMulti
 {
     static int arraySize = 100000000;
@@ -23,6 +32,8 @@ public class CopyMulti
      */
     public static void main(String args[]) throws InterruptedException
     {
+        //We need a reference to ourself to add threads to. 'this' will not
+        //work in a static method.
         CopyMulti a = new CopyMulti();
 
         //We are benchmarking a traditional 3way array swaps with and without

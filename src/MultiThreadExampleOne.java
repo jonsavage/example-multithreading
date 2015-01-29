@@ -57,8 +57,8 @@ public class MultiThreadExampleOne
         System.out.println("\nAll threads finshed in " + time + " seconds.");
 
         //Print a note
-        System.out.println("\nSo we have completed " + taskOneTime +
-            taskTwoTime + taskThreeTime + " seconds of work in " +
+        System.out.println("\nSo we have completed " + (taskOneTime +
+            taskTwoTime + taskThreeTime) + " seconds of work in " +
             time + " seconds total.");
 
     }
